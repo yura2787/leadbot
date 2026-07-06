@@ -1,6 +1,7 @@
 # LeadFlow Bot
 
-![Uploading image.png…]()
+<img width="1608" height="1818" alt="image" src="https://github.com/user-attachments/assets/dfe22463-5f18-44ca-a8d6-768943b59cf5" />
+
 
 
 A Telegram bot for automated lead capture. Collects user requests via a step-by-step wizard, saves them to Google Sheets, and instantly notifies the manager.
