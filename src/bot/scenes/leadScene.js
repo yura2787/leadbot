@@ -1,4 +1,5 @@
 const { Scenes, Markup } = require('telegraf');
+const { validateName, validatePhone } = require('../../services/validator');
 
 const leadScene = new Scenes.WizardScene(
   'leadScene',
@@ -11,7 +12,13 @@ const leadScene = new Scenes.WizardScene(
   async (ctx) => {
     if (ctx.message.text === '❌ Cancel') return cancelScene(ctx);
 
-    ctx.wizard.state.name = ctx.message.text;
+    const nameCheck = validateName(ctx.message.text);
+    if (!nameCheck.valid) {
+      await ctx.reply(`❗ ${nameCheck.error}`);
+      return;
+    }
+
+    ctx.wizard.state.name = nameCheck.value;
     await ctx.reply(
       'Please share your phone number 📱',
       Markup.keyboard([
@@ -25,12 +32,17 @@ const leadScene = new Scenes.WizardScene(
   async (ctx) => {
     if (ctx.message.text === '❌ Cancel') return cancelScene(ctx);
 
-    if (ctx.message.contact) {
-      ctx.wizard.state.phone = ctx.message.contact.phone_number;
-    } else {
-      ctx.wizard.state.phone = ctx.message.text;
+    const rawPhone = ctx.message.contact
+      ? ctx.message.contact.phone_number
+      : ctx.message.text;
+
+    const phoneCheck = validatePhone(rawPhone);
+    if (!phoneCheck.valid) {
+      await ctx.reply(`❗ ${phoneCheck.error}`);
+      return;
     }
 
+    ctx.wizard.state.phone = phoneCheck.value;
     await ctx.reply('What are you interested in? 🤔', Markup.keyboard([['❌ Cancel']]).resize());
     return ctx.wizard.next();
   },
