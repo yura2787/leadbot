@@ -13,4 +13,8 @@ bot.use(stage.middleware());
 bot.start(startHandler);
 bot.hears('📝 Submit a request', leadHandler);
 
+bot.catch((err, ctx) => {
+  console.error(`Error for ${ctx.updateType}:`, err);
+});
+
 module.exports = bot;
